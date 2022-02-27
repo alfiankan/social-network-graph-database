@@ -1,31 +1,34 @@
 import { QueryResult } from 'neo4j-driver'
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { createSession } from '../internals/database'
 import { PostRepository } from '../repository/PostRepository'
 import styles from '../styles/Home.module.css'
-import Comments from './comments'
 
-const Home: NextPage = () => {
+type Props = {
+    post_id: Number
+}
+
+const Comments: React.FC<Props> = ({post_id}) => {
   const router = useRouter()
 
-  const [posts, setPosts] = useState<QueryResult>()
+  const [comments, setComments] = useState<QueryResult>()
 
-  function getPosts() {
+  function getComments() {
     const postRepo = new PostRepository(createSession())
-
-    postRepo.getPosts().then(result => { 
-      setPosts(result) 
+    
+    postRepo.getComments(post_id).then(result => { 
+      console.log(result)
+      setComments(result) 
     }).catch(err => {
-      console.log(err)
+        console.log(err)
     })
   }
 
   useEffect(() => {
 
-    getPosts()
+    getComments()
 
   }, [0])
 
@@ -37,24 +40,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>
-        <h1 className={styles.title} style={{paddingTop: 50}}>
-          MEOW 🐈
-        </h1>
-        <hr></hr>
-      </div>
-      <div>
-
+        <div style={{paddingLeft: 50}}>Comments</div>
         {
-          posts?.records.map((post, idx) => (
-            <div key={idx}>
+          comments?.records?.map((comment, idx) => (
+            <div key={idx} style={{paddingLeft: 50}}>
               <hr></hr>
-              <p><a href={`${router.basePath}/profile/${post.get('username') }`}>@{post.get('username')}</a></p>
-              <p>{post.get('text')}</p>
-              <Comments post_id={post.get('id')} />
-
+              <p><a href={`${router.basePath}/profile/${comment.get('username')}`}>@{comment.get('username')}</a></p>
+              <p>{comment.get('text')}</p>
               <hr></hr>
-              <br></br>
             </div>
             
           ))
@@ -63,8 +56,7 @@ const Home: NextPage = () => {
       </div>
 
      
-    </div>
   )
 }
 
-export default Home
+export default Comments
