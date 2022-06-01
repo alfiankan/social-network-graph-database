@@ -9,4 +9,4 @@ this app built with nextjs, its not recomended connecting to database directly f
 
 - to build & run just run like nextjs app
 
-- read about this experiment on my medium : 
+- read about this experiment on my medium :  [this link](https://alfiankan.medium.com/explorasi-membuat-sosial-network-graph-dengan-neo4j-graph-database-dan-next-js-8b44e640f818)
